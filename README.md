@@ -57,6 +57,39 @@ I am not sure if it is mandatory to include SDK (i.e. `populate_sdk`) in the ima
 
 ### Wifi Setup
 
+## Testing the Resulting Image in the RPi3
+
+
+For actual deployment on a RPI3 processor, we need to change the `MACHINE` variable in `~/rpi/build/conf/local.conf` back to its original, `raspberrypi3` or `raspberrypi3-64`.
+For example:
+
+```bash
+# This sets the default machine to be qemux86-64 if no other machine is selected:
+MACHINE ??= "raspberrypi3"
+```
+
+It's also recommended to change the output format of the image by adding the following line of the same file:
+
+```bash
+IMAGE_FSTYPES ?= "tar.bz2 ext3 rpi-sdimg"
+```
+
+After building the image again (this time, it's quick), you will find the following file:
+
+```bash
+~/rpi/build$ find /mnt/yocto/tmp/deploy/images/raspberrypi3/ -name *.rpi-sdimg
+/mnt/yocto/tmp/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3-20211221153332.rootfs.rpi-sdimg
+/mnt/yocto/tmp/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3.rpi-sdimg
+```
+
+Remember that the `/mnt/yocto/tmp` is shared between the docker image and the host, so it's easy to burn the image file into an SD card.
+
+Return to the host computer and run `df` to find out the SD card device (assuming it is `/dev/sdb`) and run:
+
+```bash
+$ sudo dd if=/<host mounting point>/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3.rpi-sdimg of=/dev/sdb bs=4M
+```
+
 ## TO DO
 
   - wifi-ready image;
