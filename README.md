@@ -1,5 +1,7 @@
 # meta-myrpi
-Yocto layer for configuring a Raspberry Pi.
+Yocto layer for configuring a Raspberry Pi, extending existing recipes.
+
+If you want to build a recipe with your own software, please refer to [`learning-yocto`](https://github.com/amamory-embedded/learning-yocto).
 
 ## Dependencies
 
@@ -55,7 +57,14 @@ I am not sure if it is mandatory to include SDK (i.e. `populate_sdk`) in the ima
 
 ### Wifi Setup
 
+## TO DO
 
+  - wifi-ready image;
+  - support for [vnc](https://github.com/bmit-pune/meta-toradex-yocto/blob/master/recipes-graphics/vnc/tightvnc_1.3.10.bb);
+  - support for [mender](https://github.com/mendersoftware/meta-mender) for remote updates;
+  - install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24);
+  - install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros);
+  - install opencv, tf-lite2, and similar ML frameworks.
 
 ## Contributions, Patches and Pull Requests
 
