@@ -40,7 +40,7 @@ Considering the above mentioned docker container, within VNC, open a terminal an
 ```bash
 cd ~/rpi
 source /opt/yocto/dunfell/src/poky/oe-init-build-env
-git clone -b <yocto-version> https://github.com/amamory-embedded/meta-myrpi.git
+git clone -b dunfell https://github.com/amamory-embedded/meta-myrpi.git
 bitbake-layers add-layer meta-myrpi
 $ bitbake myrpi-image -c populate_sdk
 ```
