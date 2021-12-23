@@ -1,6 +1,13 @@
 # meta-myrpi
 Yocto layer for configuring a Raspberry Pi, extending existing recipes.
 
+This layer adds the following features to the RPi3:
+
+  [x] wifi-ready image;
+  [x] VNC;
+  [x] SSH server;
+  [X] USB gadget to support thetering;
+
 If you want to build a recipe with your own software, please refer to [`learning-yocto`](https://github.com/amamory-embedded/learning-yocto).
 
 ## Dependencies
@@ -82,6 +89,8 @@ After building the image again (this time, it's quick), you will find the follow
 /mnt/yocto/tmp/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3.rpi-sdimg
 ```
 
+The resulting image in `sdimg` format has about **93 MBytes**. The file `/ssd/work/yocto/rpi3-data/tmp/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3-20211223133639.rootfs.manifest` list all the packages installed in the image. This image has 222 packages. 
+
 Remember that the `/mnt/yocto/tmp` is shared between the docker image and the host, so it's easy to burn the image file into an SD card.
 
 Return to the host computer and run `df` to find out the SD card device (assuming it is `/dev/sdb`) and run:
@@ -92,12 +101,12 @@ $ sudo dd if=/<host mounting point>/deploy/images/raspberrypi3/core-image-minima
 
 ## TO DO
 
-  - wifi-ready image;
-  - support for [vnc](https://github.com/bmit-pune/meta-toradex-yocto/blob/master/recipes-graphics/vnc/tightvnc_1.3.10.bb);
-  - support for [mender](https://github.com/mendersoftware/meta-mender) for remote updates;
-  - install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24);
-  - install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros);
-  - install opencv, tf-lite2, and similar ML frameworks.
+New features for the funture:
+
+  [] support for [mender](https://github.com/mendersoftware/meta-mender) for remote updates;
+  [] install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24);
+  [] install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros);
+  [] install opencv, tf-lite2, and similar ML frameworks.
 
 ## Contributions, Patches and Pull Requests
 
