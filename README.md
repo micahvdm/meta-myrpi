@@ -85,7 +85,7 @@ After building the image again (this time, it's quick), you will find the follow
 /mnt/yocto/tmp/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3.rpi-sdimg
 ```
 
-The resulting image in `sdimg` format has about **93 MBytes**. The file `/ssd/work/yocto/rpi3-data/tmp/deploy/images/raspberrypi3/core-image-minimal-raspberrypi3-20211223133639.rootfs.manifest` list all the packages installed in the image. This image has 222 packages. 
+The resulting image in `sdimg` format has about **208 MBytes**. The file `/ssd/work/yocto/rpi3-data/tmp/deploy/images/raspberrypi3/core-image-base-raspberrypi3.rootfs.manifest` list all the packages installed in the image. This image has 1889 packages. When building the same layer on top of `core-image-minimal`, its size becomes about 93 MBytes and 220 packages. That's why I want to avoid using `core-image-base`.
 
 Remember that the `/mnt/yocto/tmp` is shared between the docker image and the host, so it's easy to burn the image file into an SD card.
 
