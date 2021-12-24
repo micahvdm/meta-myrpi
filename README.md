@@ -112,7 +112,18 @@ $ ifdown wlan0
 $ ifup wlan0
 ```
 
-It should be ready for SSH.
+You might also want to change the static IP at:
+
+```bash
+$ nano /etc/network/interfaces
+```
+
+Restart wlan0 and it should be ready for SSH.
+
+```bash
+$ ifdown wlan0
+$ ifup wlan0
+```
 
 Here are some results from the `core-image-base` based image:
 
