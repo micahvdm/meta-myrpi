@@ -53,13 +53,13 @@ I am not sure if it is mandatory to include SDK (i.e. `populate_sdk`) in the ima
 
 This layer adds the following features to the RPi3:
 
-  [x] wifi-ready image based on `core-image-base`;
-  [x] SSH server;
+  - [x] wifi-ready image based on `core-image-base`;
+  - [x] SSH server;
 
 and thse features are under testing:
 
-  [x] VNC ... still thinking if it worth the extra weight in the image;
-  [X] USB gadget to support thetering;
+  - [ ] VNC ... still thinking if it worth the extra weight in the image;
+  - [ ] USB gadget to support thetering;
 
 ## Testing the Resulting Image in the RPi3
 
@@ -118,12 +118,11 @@ It should be ready for SSH.
 
 New features for the future:
 
-  [] wifi-ready image based on `core-image-minimal`;
-  [] extended custom Yocto images inheriting from  `core-image-minimal` and `core-image-base`;
-  [] support for [mender](https://github.com/mendersoftware/meta-mender) for remote updates;
-  [] install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24);
-  [] install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros);
-  [] install opencv, tf-lite2, and similar ML frameworks.
+  - [ ] wifi-ready image based on `core-image-minimal`;
+  - [ ] extended custom Yocto images inheriting from  `core-image-minimal` and `core-image-base`;
+  - [ ] support for [mender](https://github.com/mendersoftware/meta-mender) for remote updates;
+  - [ ] install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24);
+  - [ ] install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros);
 
 ## Contributions, Patches and Pull Requests
 
