@@ -114,6 +114,26 @@ $ ifup wlan0
 
 It should be ready for SSH.
 
+Here are some results from the `core-image-base` based image:
+
+```bash
+root@raspberrypi3:~# uname -a
+Linux raspberrypi3 5.4.72-v7 SMP Mon Oct 19 11:12:20 UTC 2020 armv7l GNU/Linux
+
+root@raspberrypi3:~# df -h
+Filesystem                Size      Used Available Use% Mounted on
+/dev/root               149.7M    121.4M     20.1M  86% /
+devtmpfs                333.7M         0    333.7M   0% /dev
+tmpfs                   462.2M    152.0K    462.1M   0% /run
+tmpfs                   462.2M     76.0K    462.1M   0% /var/volatile
+
+root@raspberrypi3:~# free -h
+              total        used        free      shared  buff/cache   available
+Mem:         946604       33000      881592         228       32012      894608
+Swap:             0           0           0
+```
+
+
 ## TO DO
 
 New features for the future:
