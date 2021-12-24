@@ -98,7 +98,7 @@ $ sudo dd if=/<host mounting point>/deploy/images/raspberrypi3/core-image-minima
 ## First Boot configuration
 
 
-Change the WIFI SSID and password by editing the following file:
+Using a serial terminal or HDMI monitor + keyboard, change the WIFI SSID and password by editing the following file:
 
 ```bash
 $ wpa_passphrase "MY SSID" MYPASSWD
