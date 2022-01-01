@@ -42,11 +42,12 @@ cd ~/rpi
 source /opt/yocto/dunfell/src/poky/oe-init-build-env
 git clone -b dunfell https://github.com/amamory-embedded/meta-myrpi.git
 bitbake-layers add-layer meta-myrpi
-$ bitbake core-image-base -c populate_sdk
+bitbake core-image-base -c populate_sdk
+bitbake core-image-base
 ```
 According to this [meta-raspberry issue](https://github.com/agherzan/meta-raspberrypi/issues/576), wifi dont work with `core-image-minimal` image. So we choose `core-image-base` image but I am not happy because it adds lot's other resources I wont use (e.g. video decoding, audio, bluetooth, etc). I still have to test other images to find out one with minimal footprint. Check the [reference images here](https://www.yoctoproject.org/docs/current/ref-manual/ref-manual.html#ref-images) for other image options.
 
-I am not sure if it is mandatory to include SDK (i.e. `populate_sdk`) in the image. This needs some additional testing in the future.
+I am not sure if it is mandatory to include SDK (i.e. `populate_sdk`) in the image. This needs some additional testing in the future. The last command `bitbake core-image-base` will create the packages and the image.
 
 
 ## Layer Description
@@ -151,7 +152,12 @@ New features for the future:
 
   - [ ] wifi-ready image based on `core-image-minimal`;
   - [ ] extended custom Yocto images inheriting from  `core-image-minimal` and `core-image-base`;
-  - [ ] support for [mender](https://github.com/mendersoftware/meta-mender) for remote updates;
+  - [ ] support for OAT
+    - [ ] [mender](https://github.com/mendersoftware/meta-mender) for remote updates;
+    - [ ] [meta-updater](https://docs.ota.here.com/ota-client/latest/add-ota-functonality-existing-yocto-project.html)
+      - [ ] https://docs.ota.here.com/ota-client/latest/build-raspberry.html
+      - [ ] https://github.com/advancedtelematic/meta-updater-raspberrypi
+      - [ ] https://github.com/advancedtelematic/meta-updater
   - [ ] install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24);
   - [ ] install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros);
 
