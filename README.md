@@ -85,6 +85,14 @@ This layer enables the `buildhistory` feature of Yocto. This feature enables to 
 $ buildhistory-diff
 ```
 
+## Debugging Build Errors
+
+When dealing with build errors it's useful to check the value of bitbake variables using a command like this one:
+
+```
+$ bitbake -e <recipe name> | grep ^<variable name>=
+```
+
 ## Testing the Resulting Image in the RPi3
 
 For actual deployment on a RPI3 processor, we need to change the `MACHINE` variable in `~/rpi/build/conf/local.conf` back to its original, `raspberrypi3` or `raspberrypi3-64`.
