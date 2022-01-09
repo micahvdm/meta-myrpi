@@ -139,21 +139,28 @@ bmaptool: info: synchronizing '/dev/sdb'
 bmaptool: info: copying time: 11.9s, copying speed 16.4 MiB/sec
 ```
 
+## Ways access to the board
+
+At the time of first boot, there are tree ways to access the board:
+
+ 1. [Serial terminal](https://medium.com/@sarala.saraswati/connecting-to-your-raspberry-pi-console-via-the-serial-cable-44d7df95f03e) configured with baud rate of 115200 bps. Recommend the use of screen: `screen /dev/ttyUSB0 115200`;
+ 2. SSH via ethernet cable. `avahi` service is installed. Thus, the board can be accessed by its `MACHINE` variable value, in this case `raspberrypi3-64.local`;
+ 3. Using HDMI monitor and keyboard.
+
+After the wifi is configured using the procedure bellow, it becomes the forth access option, i.e. SSH via wifi.
+
 ## First Boot configuration
 
-
-Using a serial terminal or HDMI monitor + keyboard, change the WIFI SSID and password by editing the following file:
+Change the WIFI SSID and password by editing the `/etc/wpa_supplicant.conf` file with the following commands:
 
 ```bash
-$ wpa_passphrase "MY SSID" MYPASSWD
+$ wpa_passphrase "MY SSID"
 network={
         ssid="MY SSID"
         #psk="MYPASSWD"
         psk=12434887a7b7c994338779d9e998f8a7
 }
 $ nano /etc/wpa_supplicant.conf
-$ ifdown wlan0
-$ ifup wlan0
 ```
 
 You might also want to change the static IP at:
@@ -169,23 +176,64 @@ $ ifdown wlan0
 $ ifup wlan0
 ```
 
+# Some data and results of this image
+
 Here are some results from the `core-image-base` based image:
 
 ```bash
 root@raspberrypi3:~# uname -a
-Linux raspberrypi3 5.4.72-v7 SMP Mon Oct 19 11:12:20 UTC 2020 armv7l GNU/Linux
+Linux raspberrypi3-64 5.4.72-v8 1 SMP PREEMPT Mon Oct 19 11:12:20 UTC 2020 aarch64 aarch64 aarch64 GNU/Linux
 
 root@raspberrypi3:~# df -h
-Filesystem                Size      Used Available Use% Mounted on
-/dev/root               149.7M    121.4M     20.1M  86% /
-devtmpfs                333.7M         0    333.7M   0% /dev
-tmpfs                   462.2M    152.0K    462.1M   0% /run
-tmpfs                   462.2M     76.0K    462.1M   0% /var/volatile
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root       639M  400M  193M  68% /
+devtmpfs        328M     0  328M   0% /dev
+tmpfs           457M  192K  457M   1% /run
+tmpfs           457M   80K  457M   1% /var/volatile
+/dev/mmcblk0p1   63M   38M   25M  62% /boot
 
 root@raspberrypi3:~# free -h
               total        used        free      shared  buff/cache   available
-Mem:         946604       33000      881592         228       32012      894608
+Mem:         935236       44952      852768         272       37516      872468
 Swap:             0           0           0
+
+root@raspberrypi3-64:~# ps | wc -l
+103
+
+root@raspberrypi3-64:~# lsmod
+Module                  Size  Used by
+ipv6                  548864  22
+brcmfmac              282624  0
+brcmutil               20480  1 brcmfmac
+sha256_generic         16384  0
+libsha256              20480  1 sha256_generic
+vc4                   278528  0
+bcm2835_isp            32768  0
+bcm2835_codec          49152  0
+bcm2835_v4l2           49152  0
+v4l2_mem2mem           36864  1 bcm2835_codec
+bcm2835_mmal_vchiq     36864  3 bcm2835_codec,bcm2835_v4l2,bcm2835_isp
+videobuf2_vmalloc      20480  1 bcm2835_v4l2
+videobuf2_dma_contig    20480  2 bcm2835_codec,bcm2835_isp
+cfg80211              815104  1 brcmfmac
+videobuf2_memops       16384  2 videobuf2_vmalloc,videobuf2_dma_contig
+videobuf2_v4l2         32768  4 bcm2835_codec,bcm2835_v4l2,v4l2_mem2mem,bcm2835_isp
+snd_soc_core          225280  1 vc4
+snd_bcm2835            32768  0
+videobuf2_common       61440  5 bcm2835_codec,videobuf2_v4l2,bcm2835_v4l2,v4l2_mem2mem,bcm2835_isp
+snd_pcm_dmaengine      20480  1 snd_soc_core
+rfkill                 36864  1 cfg80211
+snd_pcm               139264  4 vc4,snd_bcm2835,snd_soc_core,snd_pcm_dmaengine
+videodev              307200  6 bcm2835_codec,videobuf2_v4l2,bcm2835_v4l2,videobuf2_common,v4l2_mem2mem,bcm2835_isp
+snd_timer              45056  1 snd_pcm
+mc                     57344  6 videodev,bcm2835_codec,videobuf2_v4l2,videobuf2_common,v4l2_mem2mem,bcm2835_isp
+vc_sm_cma              40960  2 bcm2835_mmal_vchiq,bcm2835_isp
+snd                   106496  4 snd_bcm2835,snd_timer,snd_soc_core,snd_pcm
+cec                    53248  1 vc4
+vchiq                 368640  3 vc_sm_cma,snd_bcm2835,bcm2835_mmal_vchiq
+sdhci_iproc            16384  0
+uio_pdrv_genirq        16384  0
+uio                    24576  1 uio_pdrv_genirq
 ```
 
 
@@ -193,8 +241,6 @@ Swap:             0           0           0
 
 New features for the future:
 
-  - [ ] wifi-ready image based on `core-image-minimal`;
-  - [ ] extended custom Yocto images inheriting from  `core-image-minimal` and `core-image-base`;
   - [ ] support for OAT
     - [ ] [mender](https://github.com/mendersoftware/meta-mender) for remote updates;
     - [ ] [meta-updater](https://docs.ota.here.com/ota-client/latest/add-ota-functonality-existing-yocto-project.html)
@@ -212,3 +258,7 @@ New features for the future:
 ## Contributions, Patches and Pull Requests
 
 Did you find a bug in this tutorial ? Do you have some extensions or updates to add ? Please send me a Pull Request.
+
+## Authors
+
+ - Alexandre Amory (December 2021), ReTiS Lab, Scuola Sant'Anna, Pisa, Italy.
