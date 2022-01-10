@@ -62,9 +62,6 @@ PATCHRESOLVE = "noop"
 # this doesn't mean anything to you.
 CONF_VERSION = "1"
 
-# This sets the default machine RPi if no other machine is selected:
-MACHINE ?= "raspberrypi3-64"
-
 # wifi connectivity features
 DISTRO_FEATURES_append = " wifi"
 # this packagroup includes:
