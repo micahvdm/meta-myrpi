@@ -7,9 +7,9 @@ inherit core-image
 
 #CORE_IMAGE_EXTRA_INSTALL += "libgomp libgomp-dev libgomp-staticdev"
 
-PREFERRED_PROVIDER_virtual/kernel = "linux-yocto"
+#PREFERRED_PROVIDER_virtual/kernel = "linux-yocto"
 
-IMAGE_FEATURES += "splash"
+#IMAGE_FEATURES += "splash"
 
 IMAGE_INSTALL_append = " vim nano htop"
 
