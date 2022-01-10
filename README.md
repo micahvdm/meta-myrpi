@@ -283,7 +283,7 @@ New features for the future:
 ## References
 
  - [A practical guide to BitBake](https://a4z.gitlab.io/docs/BitBake/guide.html)
- - 
+  
 
 ## Contributions, Patches and Pull Requests
 
