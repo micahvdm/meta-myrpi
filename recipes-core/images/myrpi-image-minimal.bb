@@ -3,15 +3,14 @@ LICENSE = "MIT"
 # This image DO NOT provides wifi and ethernet
 
 inherit core-image
-#require recipes-core/images/core-image-minimal.bb
-
-#CORE_IMAGE_EXTRA_INSTALL += "libgomp libgomp-dev libgomp-staticdev"
-
-#PREFERRED_PROVIDER_virtual/kernel = "linux-yocto"
-
-#IMAGE_FEATURES += "splash"
 
 IMAGE_INSTALL_append = " vim nano htop"
 
 # enable uart serial terminal
 ENABLE_UART = "1"
+
+# to check the size of the image
+# check the directory build/buildhistory/images/raspberrypi3_64/glibc/core-image-base/
+# to access the dependency, size of each package, etc
+INHERIT += "buildhistory"
+BUILDHISTORY_COMMIT = "1"

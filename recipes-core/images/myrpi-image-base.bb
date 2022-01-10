@@ -3,7 +3,7 @@ LICENSE = "MIT"
 # This image provides wifi, ethernet, and package managment
 
 #inherit core-image
-require recipes-core/images/core-image-base.bb
+#require recipes-core/images/core-image-base.bb
 require myrpi-image-minimal.bb
 
 # wifi works on 'core-image-base' but NOT on 'core-image-minimal'
@@ -165,11 +165,6 @@ EXTRA_IMAGE_FEATURES += " package-management "
 # this is the address to the package repository
 PACKAGE_FEED_URIS = "http://10.30.3.59:8000" 
 
-# removing unsued packages
-# https://stackoverflow.com/questions/28765494/yocto-minimal-image-with-package-management
-# check the file for the list of features that can be excluded
-# /opt/yocto/dunfell/src/poky/meta/recipes-core/packagegroups/packagegroup-base.bb:
-DISTRO_FEATURES_remove = " x11 alsa touchscreen bluetooth opengl wayland apm ext2 nfs phone nfc ppp"
 #PACKAGE_EXCLUDE = "bluez3 bluez4"
 
 # blacklinsting sound and video/camera kmods so that they are not removed by the kernel but they are also not loaded automatically.
@@ -196,9 +191,3 @@ DISTRO_FEATURES_remove = " x11 alsa touchscreen bluetooth opengl wayland apm ext
 
 # set the free space in the image. If not set, it will be minimal, i.e. few hundreds of MBytes
 #IMAGE_ROOTFS_EXTRA_SPACE_append = " + 8000000"
-
-# to check the size of the image
-# check the directory build/buildhistory/images/raspberrypi3_64/glibc/core-image-base/
-# to access the dependency, size of each package, etc
-INHERIT += "buildhistory"
-BUILDHISTORY_COMMIT = "1"
