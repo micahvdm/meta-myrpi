@@ -162,8 +162,6 @@ IMAGE_INSTALL_append = " \
 
 # install the package-management tool (opkg, dnf, apt), depending on the format selected next. the default is rpm.
 EXTRA_IMAGE_FEATURES += " package-management " 
-# the recomended formats are ipk (which uses opkg) or rpm (which uses dnf)
-PACKAGE_CLASSES = "package_ipk"
 # this is the address to the package repository
 PACKAGE_FEED_URIS = "http://10.30.3.59:8000" 
 
