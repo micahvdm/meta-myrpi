@@ -167,14 +167,6 @@ PACKAGE_CLASSES = "package_ipk"
 # this is the address to the package repository
 PACKAGE_FEED_URIS = "http://10.30.3.59:8000" 
 
-SSTATE_DIR = "/mnt/yocto/rpi3/shared-sstate-cache" 
-DL_DIR = "/mnt/yocto/rpi3/downloads" 
-TMPDIR = "/mnt/yocto/rpi3/tmp" 
-  
-# this is a smarter image format that can save alot of time when burning a SD card.
-# use balena etcher or bmaptool for faster results
-IMAGE_FSTYPES ?= "wic.bz2 wic wic.bmap"
-
 # removing unsued packages
 # https://stackoverflow.com/questions/28765494/yocto-minimal-image-with-package-management
 # check the file for the list of features that can be excluded
