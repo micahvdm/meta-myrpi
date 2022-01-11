@@ -5,6 +5,3 @@ LICENSE = "MIT"
 inherit core-image
 
 IMAGE_INSTALL_append = " vim nano htop"
-
-# enable uart serial terminal
-ENABLE_UART = "1"

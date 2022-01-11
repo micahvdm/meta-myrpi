@@ -92,13 +92,16 @@ If required, this is the command to configure/customize the kernel:
 $ bitbake -c menuconfig virtual/kernel
 ```
 
-at the end, it will create a `.config` file with the kernel parameters. It can also create a configuration fragment (i.e. a smaller file including only the modified parts) by running the following command:
+at the end, it will create a `.config` file with the kernel parameters. In this setup, the file is located in 
+`/mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source/.kernel-meta/cfg/.config`. 
+
+It is also possible to create a configuration fragment (i.e. a smaller file including only the modified parts) by running the following command:
 
 ```bash
 $ bitbake -c diffconfig virtual/kernel
 ```
 
-The fragment file can be embedded into a recipe to configure the kernel automaticaly in the next time. Check [Customizing the Linux kernel](https://variwiki.com/index.php?title=Yocto_Customizing_the_Linux_kernel) for more information.
+The generated fragment file (`fragment.cfg`) can be embedded into a recipe to configure the kernel automaticaly in the next time. Check [Customizing the Linux kernel](https://variwiki.com/index.php?title=Yocto_Customizing_the_Linux_kernel) for more information.
 
 When ready, save the kernel configuration by running:
 
@@ -106,11 +109,57 @@ When ready, save the kernel configuration by running:
 $ bitbake -c savedefconfig virtual/kernel
 ```
 
+The `defconfig` file contains the entire kernel configuration and, as the fragment file, can be used to reproduce the exact same kernel configuration.
+
+In the kernel source there is a script in `scripts/kconfig/merge_config.sh` to merge configuration fragments into `.config`. 
+The kernel source is located in `/mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source`. So, by executing this script in the build directory we can update the `.config` with our fragments. Here is an example of execution:
+
+This is the general format, assuming you are in the linux kernel source directory:
+
+```bash
+$ scripts/kconfig/merge_config.sh -m -O <destination-dir> source.config source-frag.cfg 
+```
+
+And this is an example with Yocto:
+
+```bash
+$ cd ~/rpi/build
+$ /mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source/scripts/kconfig/merge_config.sh -m -O /mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source/.kernel-meta/cfg/ /mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source/.kernel-meta/cfg/.config meta-myrpi/recipes-kernel/linux/linux-raspberrypi/files/config-rt.cfg 
+```
+
+Kernel configuration workflow
+
+```
+$ bitbake -c cleansstate virtual/kernel
+$ bitbake -f -c compile virtual/kernel
+$ bitbake -c deploy virtual/kernel
+```
+
+cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor 
+
+root@raspberrypi3-64:~# cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 
+performance
+performance
+performance
+performance
+
+
+https://www.dazhuanlan.com/dongguayin/topics/1766855
+https://github.com/agherzan/meta-raspberrypi/issues/794
+https://stackoverflow.com/questions/45573078/how-to-use-an-own-kernel-configuration-for-a-raspberry-pi-in-yocto
+https://community.nxp.com/t5/i-MX-Processors-Knowledge-Base/i-MX-Yocto-Project-How-can-I-patch-the-kernel/ta-p/1106231
+https://community.nxp.com/t5/i-MX-Processors/linux-imx-how-to-apply-my-own-defconfig/m-p/915853
+https://docs.yoctoproject.org/kernel-dev/common.html#creating-and-preparing-a-layer
+https://stackoverflow.com/questions/52499588/yocto-bitbake-config-file-location
+https://www.titanwolf.org/Network/q/09ba07c0-7887-4563-a868-a23960f9e097/y
+
 Run this command to check the other tasks related to the kernel.
 
 ```bash
 $ bitbake virtual/kernel -c listtasks
 ```
+
+Please refer to the [Yocto Project Linux Kernel Development Manual](https://docs.yoctoproject.org/kernel-dev/index.html) for more information.
 
 ## Build History
 
@@ -126,6 +175,24 @@ When dealing with build errors it's useful to check the value of bitbake variabl
 
 ```
 $ bitbake -e <recipe name> | grep ^<variable name>=
+```
+
+To check if the `bbappend` files are being applied. Since this layer has a kernel append, it is expected to find an output like this:
+
+```
+$ bitbake-layers show-appends 
+...
+linux-raspberrypi_5.4.bb:
+  /home/build/myrpi/build/meta-myrpi/recipes-kernel/linux/linux-raspberrypi/linux-raspberrypi_5.4%.bbappend
+...
+```
+
+$ find -name "linux-*.bbappend" 
+
+
+It's also possible to increase the verbosity level, like this:
+```
+$ bitbake -D -v <image/recipe name>
 ```
 
 ## Testing the Resulting Image in the RPi3
@@ -283,6 +350,7 @@ New features for the future:
 ## References
 
  - [A practical guide to BitBake](https://a4z.gitlab.io/docs/BitBake/guide.html)
+ - [bitbake commands](https://backstreetcoder.com/bitbake-commands/)
   
 
 ## Contributions, Patches and Pull Requests
