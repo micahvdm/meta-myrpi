@@ -26,7 +26,7 @@ We use a docker container with Yocto and VNC installed. Check out the [container
 
 ## Adding the meta-myrpi layer to your build
 
-Considering the above mentioned docker container, within VNC, open a terminal in the `rpi` directory and run:
+Considering the above mentioned docker container, open a terminal (refer to the previous section about opening a container terminal) in the `rpi` directory and run:
 
 ```bash
 $ cd rpi
@@ -49,7 +49,7 @@ BBLAYERS ?= " \
   /opt/yocto/dunfell/src/poky/meta \
   /opt/yocto/dunfell/src/poky/meta-poky \
   /opt/yocto/dunfell/src/poky/meta-yocto-bsp \
-  /home/build/myrpi/build/meta-myrpi \
+  /home/build/rpi/build/meta-myrpi \
   "
 BBLAYERS += " \ 
   /opt/yocto/dunfell/src/meta-raspberrypi \ 
@@ -92,29 +92,25 @@ If required, this is the command to configure/customize the kernel:
 $ bitbake -c menuconfig virtual/kernel
 ```
 
-at the end, it will create a `.config` file with the kernel parameters. In this setup, the file is located in 
-`/mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source/.kernel-meta/cfg/.config`. 
+One can configure the kernel by manually setting the options using `menuconfig` or do it automatically, like in this layer, as described in `recipes-kernel/linux/linux-raspberrypi/linux-raspberrypi_5.4%.bbappend`. There are two versions of the kernel append script. The default version applies an entire `.config` file to the kernel configuration. Check the [deconfig](./recipes-kernel/linux/linux-raspberrypi/files/defconfig) file. The second version, commented in the same bbappend file, can be used to apply kernel configuration fragments (i.e. a smaller file including only the modified parts) instead of an entire configuration file. Check the [config-rt.cfg](./recipes-kernel/linux/linux-raspberrypi/files/config-rt.cfg) fragment file for an example.
 
-It is also possible to create a configuration fragment (i.e. a smaller file including only the modified parts) by running the following command:
+After manually setting the kernel configuration with the `menuconfig` task, run the following command to create a kernel configuration fragment:
 
 ```bash
 $ bitbake -c diffconfig virtual/kernel
 ```
 
-The generated fragment file (`fragment.cfg`) can be embedded into a recipe to configure the kernel automaticaly in the next time. Check [Customizing the Linux kernel](https://variwiki.com/index.php?title=Yocto_Customizing_the_Linux_kernel) for more information.
+The generated fragment file (`fragment.cfg`) can be included into the recipe to configure the kernel automaticaly in the next time. There might be multiple fragments. Check [Customizing the Linux kernel](https://variwiki.com/index.php?title=Yocto_Customizing_the_Linux_kernel) for more information.
 
-When ready, save the kernel configuration by running:
+When ready, save the entire kernel configuration by running:
 
 ```bash
 $ bitbake -c savedefconfig virtual/kernel
 ```
 
-The `defconfig` file contains the entire kernel configuration and, as the fragment file, can be used to reproduce the exact same kernel configuration.
+The resulting `defconfig` file contains the entire kernel configuration and, as the fragment file, can be used to reproduce the exact same kernel configuration.
 
-In the kernel source there is a script in `scripts/kconfig/merge_config.sh` to merge configuration fragments into `.config`. 
-The kernel source is located in `/mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source`. So, by executing this script in the build directory we can update the `.config` with our fragments. Here is an example of execution:
-
-This is the general format, assuming you are in the linux kernel source directory:
+In the kernel source there is a script in `scripts/kconfig/merge_config.sh` to merge configuration fragments into `.config`. The kernel source is located in `/mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source`. So, by executing this script in the build directory we can update the `.config` with our fragments. This is the general format, assuming you are in the linux kernel source directory:
 
 ```bash
 $ scripts/kconfig/merge_config.sh -m -O <destination-dir> source.config source-frag.cfg 
@@ -127,36 +123,100 @@ $ cd ~/rpi/build
 $ /mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source/scripts/kconfig/merge_config.sh -m -O /mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source/.kernel-meta/cfg/ /mnt/yocto/rpi3/tmp/work-shared/raspberrypi3-64/kernel-source/.kernel-meta/cfg/.config meta-myrpi/recipes-kernel/linux/linux-raspberrypi/files/config-rt.cfg 
 ```
 
-Kernel configuration workflow
+The linux kernel source directory also includes a script to compare config files:
+
+```
+$ <kernel-source>/scripts/diffconfig .config1 .config2
+```
+
+## Debugging the Kernel Configuration
+
+Kernel configuration can be a bit trick and it might not work in the first time. The first thing to check, even before the first kernel compilation, is to see if the kernel bbappend file in this layer is corretly referenced in the Yocto project. Run the following command:
+
+```
+$ bitbake-layers show-appends | grep linux
+...
+linux-raspberrypi_5.4.bb:
+  /home/build/rpi/build/meta-myrpi/recipes-kernel/linux/linux-raspberrypi/linux-raspberrypi_5.4%.bbappend
+...
+```
+
+This output means that the bbappend file is read by Yocto. Next, this is 
+suggested workflow for building and debugging the kernel configuration:
 
 ```
 $ bitbake -c cleansstate virtual/kernel
 $ bitbake -f -c compile virtual/kernel
 $ bitbake -c deploy virtual/kernel
+$ bitbake <image-name>
 ```
 
-cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor 
+In fact, it is not necessary to build the entire image to check the kernel configuration. 
+When the kernel compilation starts, interrupt the process with CTRL + C and grep the following file:
 
-root@raspberrypi3-64:~# cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 
-performance
-performance
-performance
-performance
+```
+$ cat /mnt/yocto/rpi3/tmp/work/raspberrypi3_64-poky-linux/linux-raspberrypi/1_5.4.72+gitAUTOINC+5d52d9eea9_154de7bbd5-r0/linux-raspberrypi3_64-standard-build/.config | grep <option-name>
+```
 
+If the option has the expected value, then the configuration merge process went well. 
 
-https://www.dazhuanlan.com/dongguayin/topics/1766855
-https://github.com/agherzan/meta-raspberrypi/issues/794
-https://stackoverflow.com/questions/45573078/how-to-use-an-own-kernel-configuration-for-a-raspberry-pi-in-yocto
-https://community.nxp.com/t5/i-MX-Processors-Knowledge-Base/i-MX-Yocto-Project-How-can-I-patch-the-kernel/ta-p/1106231
-https://community.nxp.com/t5/i-MX-Processors/linux-imx-how-to-apply-my-own-defconfig/m-p/915853
-https://docs.yoctoproject.org/kernel-dev/common.html#creating-and-preparing-a-layer
-https://stackoverflow.com/questions/52499588/yocto-bitbake-config-file-location
-https://www.titanwolf.org/Network/q/09ba07c0-7887-4563-a868-a23960f9e097/y
+In Yocto, the recipes execute several tasks. Each task generates log files that can be used for debugging. For instance, the `virtual/kernel` recipe that runs linux-raspberrypi kernel extension, generates logs in the following folder:
 
-Run this command to check the other tasks related to the kernel.
+```bash
+$ ls <base-tmp>/tmp/work/raspberrypi3_64-poky-linux/linux-raspberrypi/1_5.4.72+gitAUTOINC+5d52d9eea9_154de7bbd5-r0/temp/
+```
+
+Run this command to check the list of tasks related to the kernel.
 
 ```bash
 $ bitbake virtual/kernel -c listtasks
+```
+
+And check the `log.task_order` file in the same directory. this file shows the execution order of the tasks. Follow this order to check the log and run files.
+
+```bash
+$ cat /mnt/yocto/rpi3/tmp/work/raspberrypi3_64-poky-linux/linux-raspberrypi/1_5.4.72+gitAUTOINC+5d52d9eea9_154de7bbd5-r0/temp/log.task_order
+do_cleansstate (8237): log.do_cleansstate.8237
+do_cleanall (8238): log.do_cleanall.8238
+do_fetch (8395): log.do_fetch.8395
+do_unpack (8524): log.do_unpack.8524
+do_prepare_recipe_sysroot (8525): log.do_prepare_recipe_sysroot.8525
+do_symlink_kernsrc (8572): log.do_symlink_kernsrc.8572
+do_kernel_checkout (8573): log.do_kernel_checkout.8573
+do_validate_branches (9030): log.do_validate_branches.9030
+do_kernel_metadata (9055): log.do_kernel_metadata.9055
+do_patch (11406): log.do_patch.11406
+do_kernel_configme (11511): log.do_kernel_configme.11511
+do_deploy_source_date_epoch (11512): log.do_deploy_source_date_epoch.11512
+do_configure (11874): log.do_configure.11874
+do_menuconfig (12146): log.do_menuconfig.12146
+```
+
+This specific kernel `bbappend` extends the following definitions:
+
+```
+meta-raspberrypi/recipes-kernel/linux/linux-raspberrypi.inc
+poky/meta/classes/kernel.bbclass
+```
+
+In more complex situations you might need to put some debugging prints in these two files to figure out the kernel configuration process.
+
+Finally, when running the kernel in the board, it is possible to check whether the kernel options where correctly deployed. For instance, one of the options set in this layer is to put the frequency scaling mode to `performance` by default. In this case, this can be checked with this command:
+
+```bash
+$ cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor 
+performance
+$ cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor 
+performance
+performance
+performance
+performance
+```
+
+Another kernel option set in this example is `CONFIG_IKCONFIG`, which writes the kernel configuration file into `/proc/config.gz`. Thus, one can check the option values by running in the board:
+
+```bash
+$ zcat /proc/config.gz | grep <option-name>
 ```
 
 Please refer to the [Yocto Project Linux Kernel Development Manual](https://docs.yoctoproject.org/kernel-dev/index.html) for more information.
@@ -181,19 +241,20 @@ To check if the `bbappend` files are being applied. Since this layer has a kerne
 
 ```
 $ bitbake-layers show-appends 
-...
-linux-raspberrypi_5.4.bb:
-  /home/build/myrpi/build/meta-myrpi/recipes-kernel/linux/linux-raspberrypi/linux-raspberrypi_5.4%.bbappend
-...
 ```
 
-$ find -name "linux-*.bbappend" 
+Or run this command to find the existing bbappend files in your setup:
 
+```
+$ find -name "linux-*.bbappend" 
+```
 
 It's also possible to increase the verbosity level, like this:
 ```
 $ bitbake -D -v <image/recipe name>
 ```
+
+As mentioned before, in Yocto, the recipes execute several tasks. It is very usefull to debug the task execution by looking at the recipe `temp/` directory, where all the `run.*` and `log.*` files are stored.
 
 ## Testing the Resulting Image in the RPi3
 
@@ -223,7 +284,7 @@ Remember that the `/mnt/yocto/tmp` is shared between the docker image and the ho
 ```bash
 $ sudo apt install bmap-tools
 ```
-Then, insert the SD card, unmount the its partitions, proceed with the actual copy to the SD card:
+Then, insert the SD card, unmount the its partitions, proceed with the actual copy to the SD card by running:
 
 ```bash
 $ sudo bmaptool copy --bmap image.wic.bmap image.wic.bz2 /dev/sdb
@@ -244,7 +305,7 @@ At the time of first boot with the `myrpi-image-base` or `myrpi-image-dev`, ther
  2. SSH via ethernet cable. `avahi` service is installed. Thus, the board can be accessed by its `MACHINE` variable value, in this case `raspberrypi3-64.local`;
  3. Using HDMI monitor and keyboard.
 
-After the wifi is configured using the procedure bellow, it becomes the forth access option, i.e. SSH via wifi.
+After the wifi is configured using the procedure bellow, it becomes the forth access option, i.e. SSH via wifi. The image `myrpi-image-minimal` does not have the second option.
 
 ## First Boot configuration
 
@@ -332,7 +393,6 @@ sdhci_iproc            16384  0
 uio_pdrv_genirq        16384  0
 uio                    24576  1 uio_pdrv_genirq
 ```
-
 
 ## TO DO
 
