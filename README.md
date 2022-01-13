@@ -394,6 +394,20 @@ uio_pdrv_genirq        16384  0
 uio                    24576  1 uio_pdrv_genirq
 ```
 
+## Changing this Layer
+
+### Use this Layer with Another Raspberry Pi
+
+
+- `MACHINE ?= "raspberrypi3-64"` in [layer.conf](./conf/layer.conf). Check `meta-raspberrypi/conf/machine/` for the supported RPi models;
+
+### Use this Layer with Another Yocto Version
+
+If you want to use this layer with another Yocto version rather than `dunfell`, you will probably need to change:
+
+ - `LAYERSERIES_COMPAT_meta-myrpi` in [layer.conf](./conf/layer.conf);
+ - [bbappend](./recipes-kernel/linux/linux-raspberrypi/linux-raspberrypi_5.4%.bbappend) file, updating the the corresponding kernel version which might imply modifying the defconfig and the fragments.
+
 ## TO DO
 
 New features for the future:
