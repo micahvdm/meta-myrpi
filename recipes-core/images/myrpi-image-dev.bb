@@ -17,6 +17,11 @@ IMAGE_INSTALL_append = " \
     dtc \
 "
 
+# other features that might be interesting, defined in :
+# /opt/yocto/dunfell/src/poky/meta/recipes-rt/images/core-image-rt-sdk.bb
+# IMAGE_FEATURES += "dev-pkgs tools-sdk tools-debug eclipse-debug tools-profile tools-testapps debug-tweaks"
+# IMAGE_INSTALL += "rt-tests hwlatdetect kernel-dev"
+
 # kernel dev tools
 #IMAGE_INSTALL_append = " \
 #    kernel-dev  \
