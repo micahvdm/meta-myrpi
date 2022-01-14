@@ -84,6 +84,18 @@ If you want to build the toolchain for the target `MACHINE`, run:
 $ bitbake <image> -c populate_sdk
 ```
 
+## Supported Kernel Versions
+
+Currently, this layer supports two kernel versions supported by meta-raspberrypi:
+
+ - v5.4;
+ - v4.19-rt, with PREEMPT_RT patch.
+
+To switch the kernel versions, go to [`conf/layer.conf`](./conf/layer.conf) and choose one of these options:
+
+ - `PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi-rt"`
+ - `PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi"`
+
 ## Kernel Customization
 
 If required, this is the command to configure/customize the kernel:
@@ -418,7 +430,8 @@ New features for the future:
       - [ ] https://docs.ota.here.com/ota-client/latest/build-raspberry.html
       - [ ] https://github.com/advancedtelematic/meta-updater-raspberrypi
       - [ ] https://github.com/advancedtelematic/meta-updater
-  - [ ] install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24);
+  - [x] install preempt_rt kernel (v4.19) from meta-raspberrypi;
+  - [ ] install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24)(v5.15);
   - [ ] install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros);
   - [ ] setup the cross debugger;
   - [ ] implement [testing](https://docs.yoctoproject.org/test-manual/intro.html#) and integrate with a [buildbot CI framework](https://git.yoctoproject.org/yocto-autobuilder2/tree/README.md);
