@@ -89,7 +89,7 @@ $ bitbake <image> -c populate_sdk
 Currently, this layer supports two kernel versions supported by meta-raspberrypi:
 
  - v5.4;
- - v4.19-rt, with PREEMPT_RT patch.
+ - v4.19-rt, with PREEMPT_RT patch, enabling the kernel option `CONFIG_PREEMPT_RT_FULL`.
 
 To switch the kernel versions, go to [`conf/layer.conf`](./conf/layer.conf) and choose one of these options:
 
@@ -351,10 +351,19 @@ $ ifup wlan0
 Here are some results from the `core-image-base` based image:
 
 ```bash
-root@raspberrypi3:~# uname -a
+root@raspberrypi3:~$ uname -a
 Linux raspberrypi3-64 5.4.72-v8 1 SMP PREEMPT Mon Oct 19 11:12:20 UTC 2020 aarch64 aarch64 aarch64 GNU/Linux
+```
 
-root@raspberrypi3:~# df -h
+The same for the kernel version 4.19 with PREEMPT_RT patch:
+
+```bash
+root@raspberrypi3-64:~$ uname -a
+Linux raspberrypi3-64 4.19.71-rt24-v8 1 SMP PREEMPT RT Tue Dec 17 14:50:30 UTC 2019 aarch64 GNU/Linux
+```
+
+```bash
+root@raspberrypi3:~$ df -h
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/root       639M  400M  193M  68% /
 devtmpfs        328M     0  328M   0% /dev
@@ -362,15 +371,15 @@ tmpfs           457M  192K  457M   1% /run
 tmpfs           457M   80K  457M   1% /var/volatile
 /dev/mmcblk0p1   63M   38M   25M  62% /boot
 
-root@raspberrypi3:~# free -h
+root@raspberrypi3:~$ free -h
               total        used        free      shared  buff/cache   available
 Mem:         935236       44952      852768         272       37516      872468
 Swap:             0           0           0
 
-root@raspberrypi3-64:~# ps | wc -l
+root@raspberrypi3-64:~$ ps | wc -l
 103
 
-root@raspberrypi3-64:~# lsmod
+root@raspberrypi3-64:~$ lsmod
 Module                  Size  Used by
 ipv6                  548864  22
 brcmfmac              282624  0
@@ -440,6 +449,10 @@ New features for the future:
 
  - [A practical guide to BitBake](https://a4z.gitlab.io/docs/BitBake/guide.html)
  - [bitbake commands](https://backstreetcoder.com/bitbake-commands/)
+ - [Wind River Linux - Platform Development Guide](https://docs.windriver.com/bundle/Wind_River_Linux_Platform_Developers_Guide_LTS_19/) excelent documentation on how to use Yocto for their Linux product;
+ - Applying the [PREEMPT_RT patch to rpi](https://github.com/kdoren/linux/wiki/Building-PREEMPT_RT-kernel-for-Raspberry-Pi);
+ - [HOWTO setup Linux with PREEMPT_RT properly](https://wiki.linuxfoundation.org/realtime/documentation/howto/applications/preemptrt_setup);
+ - [LeMaRiva](https://lemariva.com/blog/category/rt-systems) series of posts of [RT kernels](https://github.com/lemariva/RT-Tools-RPi) on RPi boards;
   
 
 ## Contributions, Patches and Pull Requests
