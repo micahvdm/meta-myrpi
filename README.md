@@ -441,9 +441,12 @@ New features for the future:
       - [ ] https://github.com/advancedtelematic/meta-updater
   - [x] install preempt_rt kernel (v4.19) from meta-raspberrypi;
   - [ ] install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24)(v5.15);
-  - [ ] install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros);
+  - [ ] install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros). 
+  - [ ] ROS - [Build RT_PREEMPT kernel for Raspberry Pi 4](https://github.com/ros-realtime/linux-real-time-kernel-builder/blob/master/.config-fragment);
   - [ ] setup the cross debugger;
   - [ ] implement [testing](https://docs.yoctoproject.org/test-manual/intro.html#) and integrate with a [buildbot CI framework](https://git.yoctoproject.org/yocto-autobuilder2/tree/README.md);
+  - [ ] ROS-realtime - [Build RT_PREEMPT kernel for Raspberry Pi 4](https://github.com/ros-realtime/linux-real-time-kernel-builder);
+  - [ ] (RT-validation)[https://github.com/toradex/rt-validation];
 
 ## References
 
@@ -452,8 +455,9 @@ New features for the future:
  - [Wind River Linux - Platform Development Guide](https://docs.windriver.com/bundle/Wind_River_Linux_Platform_Developers_Guide_LTS_19/) excelent documentation on how to use Yocto for their Linux product;
  - Applying the [PREEMPT_RT patch to rpi](https://github.com/kdoren/linux/wiki/Building-PREEMPT_RT-kernel-for-Raspberry-Pi);
  - [HOWTO setup Linux with PREEMPT_RT properly](https://wiki.linuxfoundation.org/realtime/documentation/howto/applications/preemptrt_setup);
+ - [Realtime Testing Best Practices](https://elinux.org/Realtime_Testing_Best_Practices);
  - [LeMaRiva](https://lemariva.com/blog/category/rt-systems) series of posts of [RT kernels](https://github.com/lemariva/RT-Tools-RPi) on RPi boards;
-  
+
 
 ## Contributions, Patches and Pull Requests
 

@@ -127,10 +127,6 @@ DISTRO_FEATURES_append = " usbgadget"
 # $ cat /mnt/yocto/tmp/deploy/images/raspberrypi3/bootfiles/config.txt | grep -i dwc
 # $ cat /mnt/yocto/tmp/deploy/images/raspberrypi3/bootfiles/cmdline.txt 
 
-# source: https://www.xaprb.com/blog/2006/05/23/how-to-use-linuxs-proc-config-feature/
-# edit the kernel options CONFIG_PROC_FS, CONFIG_IKCONFIG, and CONFIG_IKCONFIG_PROC
-# to generate the file /proc/config.gz
-
 # extra tools
 IMAGE_INSTALL_append = " bash \
 			 bash-completion \

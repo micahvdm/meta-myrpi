@@ -1,6 +1,6 @@
 SUMMARY = "Raspberry Pi minimal image"
 LICENSE = "MIT"
-# This image DO NOT provides wifi and ethernet
+# This image DOES NOT provide wifi and ethernet
 
 inherit core-image
 
