@@ -2,7 +2,7 @@ SUMMARY = "Raspberry Pi PREEMPT_RT kernel  - using a complete .config file"
 LICENSE = "MIT"
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-SRC_URI += " file://defconfig-rt"
+SRC_URI += " file://defconfig_4.19-rt"
 
 unset KBUILD_DEFCONFIG
 

@@ -86,15 +86,68 @@ $ bitbake <image> -c populate_sdk
 
 ## Supported Kernel Versions
 
-Currently, this layer supports two kernel versions supported by meta-raspberrypi:
+Currently, this layer supports the following kernel versions:
 
  - v5.4;
- - v4.19-rt, with PREEMPT_RT patch, enabling the kernel option `CONFIG_PREEMPT_RT_FULL`.
+ - v5.4 with the PREEMPT_RT patch. This is the **default configuration**;
+ - v4.19-rt, with PREEMPT_RT patch;
+ - [v5.15.12-rt](https://github.com/kdoren/linux/tree/rpi-5.15.12-rt), an external Linux kernel with newer version. **Under development**;
 
-To switch the kernel versions, go to [`conf/layer.conf`](./conf/layer.conf) and choose one of these options:
+### Linux kernel v5.4
 
- - `PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi-rt"`
- - `PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi"`
+To switch to this kernel version, check the following options of these files:
+
+ - [`conf/layer.conf`](./conf/layer.conf):
+
+ ```
+ PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi"
+ ```
+
+ - [`recipes-kernel/linux/linux-raspberrypi/linux-raspberrypi_5.4%.bbappend`](./recipes-kernel/linux/linux-raspberrypi/linux-raspberrypi_5.4%.bbappend):
+
+```
+SRC_URI += " file://defconfig_5.4"
+```
+
+### Linux kernel v5.4-rt
+
+To switch to this kernel version, check the following options of these files:
+
+ - [`conf/layer.conf`](./conf/layer.conf):
+
+```
+PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi"
+```
+
+ - [`recipes-kernel/linux/linux-raspberrypi/linux-raspberrypi_5.4%.bbappend`](./recipes-kernel/linux/linux-raspberrypi/linux-raspberrypi_5.4%.bbappend):
+
+```
+SRC_URI += " file://defconfig_5.4-rt \
+file://patch-5.4.74-rt42.patch \
+"
+```
+
+### Linux kernel v4.19-rt
+
+To switch to this kernel version, check the following options of these files:
+
+ - [`conf/layer.conf`](./conf/layer.conf):
+
+```
+PREFERRED_PROVIDER_virtual/kernel = "linux-raspberrypi-rt"
+```
+
+### Linux kernel v5.15-rt (under develpment)
+
+To switch to this kernel version, check the following options of these files:
+
+ - [`conf/layer.conf`](./conf/layer.conf):
+
+```
+PREFERRED_VERSION_linux-libc-headers="5.15%"
+PREFERRED_VERSION_linux-raspberrypi="5.15.%"
+PREFERRED_VERSION_linux-yocto="5.15%"
+```
 
 ## Kernel Customization
 
@@ -439,7 +492,7 @@ New features for the future:
       - [ ] https://docs.ota.here.com/ota-client/latest/build-raspberry.html
       - [ ] https://github.com/advancedtelematic/meta-updater-raspberrypi
       - [ ] https://github.com/advancedtelematic/meta-updater
-  - [x] install preempt_rt kernel (v4.19) from meta-raspberrypi;
+  - [x] install preempt_rt kernel (v4.19 and v5.4) from meta-raspberrypi;
   - [ ] install [preempt_rt kernel](https://github.com/kdoren/linux/tree/rpi_5.15.10-rt24)(v5.15);
   - [ ] install [ROS2](https://github.com/ros/meta-ros/wiki/OpenEmbedded-Build-Instructions) layers, tested with this [tutorial](https://github.com/vmayoral/diving-meta-ros). 
   - [ ] ROS - [Build RT_PREEMPT kernel for Raspberry Pi 4](https://github.com/ros-realtime/linux-real-time-kernel-builder/blob/master/.config-fragment);
